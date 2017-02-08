@@ -39,38 +39,20 @@ body {background-color: powderblue;}
 
 <script>
 if (window.module) module = window.module;
+const ipc = require('electron').ipcRenderer
 var code = $("#box").val()
 
-function current_line(textarea) {
-  var $ta = $(textarea),
-      pos = $ta.getSelection().start, // fieldselection jQuery plugin
-      taval = $ta.val(),
-      start = taval.lastIndexOf('\n', pos - 1) + 1,
-      end = taval.indexOf('\n', pos);
-
-  if (end == -1) {
-    end = taval.length;
-  }
-
-  return taval.substr(start, end - start);
-}
-
-
-function load_scratch(){
-  var fs = require('fs'); 
-  var filepath = `${__dirname}/template/sketch.js`
-  fs.writeFile(filepath, $("#box").val(), function (err) {
-    if(err){
-      alert("An error ocurred updating the file"+ err.message);
-      console.log(err);
-      return;
-    }
-  }); 
-  window.open(`file://${__dirname}/template/index.html`,{fullscreen:true})
-}
 
 $( "#box" ).on('keyup',function() {
   if(code != $("#box").val()){
+    var filepath = `${__dirname}/template/sketch.js`
+    fs.writeFile(filepath, $("#box").val(), function (err) {
+      if(err){
+        alert("An error ocurred updating the file"+ err.message);
+        console.log(err);
+        return;
+      }
+    });
     //alert( "Handler for .change() called." );
     //console.log("code changed")
     var caretPos = $('#box').prop("selectionStart");
@@ -83,8 +65,10 @@ $( "#box" ).on('keyup',function() {
     $("#line").text(line)
   }
 });
+
+var fs = require('fs');
 $("#play").on('click',function(){
-  load_scratch()
+  ipc.send('asynchronous_load_scratch', 'ping')
 });
 //var fs = require('fs'); // Load the File System to execute our common tasks (CRUD)
 //var dialog = app.dialog;

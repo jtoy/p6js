@@ -6,6 +6,12 @@ const app = electron.app
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
 
+const ipc = require('electron').ipcMain
+
+ipc.on('asynchronous_load_scratch', function (event, arg) {
+  load_scratch()
+})
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
@@ -35,9 +41,10 @@ function createWindow () {
 app.on('ready', createWindow)
 app.on('ready', () => {
   // Register a 'CommandOrControl+Y' shortcut listener.
-//  globalShortcut.register('CommandOrControl+R', () => {
+  globalShortcut.register('CommandOrControl+R', () => {
     //put code to run code here
-//  })
+    load_scratch()
+  })
 })
 
 // Quit when all windows are closed.
@@ -57,3 +64,11 @@ app.on('activate', function () {
   }
 })
 
+function load_scratch(){
+  var fs = require('fs'); 
+  const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
+  newWindow = new BrowserWindow({width: width, height: height})
+  var path = `file://${__dirname}/app/template/index.html`
+  console.log(path)
+  newWindow.loadURL(path)
+}

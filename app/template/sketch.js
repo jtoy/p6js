@@ -1,10 +1,12 @@
   function setup(){
-t=0
+createCanvas(800,800)
+line(90,20,9,90)
   }
 
   function draw(){
+for(i=0;i<width;i++){
+ line(0,i,i,width) 
+}
 
-  x= noise(t)*width
-ellipse(x,20,30,30)
-t+=0.01
+ellipse(90,90,50,50)
   }
