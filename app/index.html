@@ -1,0 +1,91 @@
+hello world<br>
+
+<style>
+#container{
+  display:flex;
+  flex-direction:row;
+  justify-content: space-around;
+}
+#editor{
+  display:flex;
+  float:left;
+  flex-direction:column;
+}
+#side{
+  display:flex;
+  flex-direction:column;
+}
+body {background-color: powderblue;}
+</style>
+  <div id="play">play</div>
+  <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+  <script src="jquery-3.1.1.min.js"></script> 
+<div>
+  <div id="editor">
+<textarea id="box" rows=50 cols=100>
+  function setup(){
+  }
+
+  function draw(){
+  }
+</textarea>
+</div>
+<div id="side">
+ side
+ <div id="line">CURRENT LINE</div>
+</div>
+</div>
+
+
+<script>
+if (window.module) module = window.module;
+var code = $("#box").val()
+
+function current_line(textarea) {
+  var $ta = $(textarea),
+      pos = $ta.getSelection().start, // fieldselection jQuery plugin
+      taval = $ta.val(),
+      start = taval.lastIndexOf('\n', pos - 1) + 1,
+      end = taval.indexOf('\n', pos);
+
+  if (end == -1) {
+    end = taval.length;
+  }
+
+  return taval.substr(start, end - start);
+}
+
+
+function load_scratch(){
+  var fs = require('fs'); 
+  var filepath = `${__dirname}/template/sketch.js`
+  fs.writeFile(filepath, $("#box").val(), function (err) {
+    if(err){
+      alert("An error ocurred updating the file"+ err.message);
+      console.log(err);
+      return;
+    }
+  }); 
+  window.open(`file://${__dirname}/template/index.html`,{fullscreen:true})
+}
+
+$( "#box" ).on('keyup',function() {
+  if(code != $("#box").val()){
+    //alert( "Handler for .change() called." );
+    //console.log("code changed")
+    var caretPos = $('#box').prop("selectionStart");
+    console.log(caretPos)
+    var start, end ;
+    var myString = $("#box").val()
+    for (start = caretPos; start >= 0 && myString[start] != "\n"; --start);
+    for (end = caretPos; end < myString.length && myString[end] != "\n"; ++end);
+    var line = myString.substring(start + 1, end - 1);
+    $("#line").text(line)
+  }
+});
+$("#play").on('click',function(){
+  load_scratch()
+});
+//var fs = require('fs'); // Load the File System to execute our common tasks (CRUD)
+//var dialog = app.dialog;
+</script>
