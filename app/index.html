@@ -1,5 +1,5 @@
 hello world<br>
-
+<title>p6 - scratchpad</title>
 <style>
 #container{
   display:flex;
@@ -20,8 +20,11 @@ body {background-color: powderblue;}
   <div id="play">play</div>
   <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
   <script src="jquery-3.1.1.min.js"></script> 
+  <script src="underscore-min.js"></script> 
 <div>
   <div id="editor">
+    <pre>
+<code>
 <textarea id="box" rows=50 cols=100>
   function setup(){
   }
@@ -29,6 +32,8 @@ body {background-color: powderblue;}
   function draw(){
   }
 </textarea>
+</code>
+    </pre>
 </div>
 <div id="side">
  side
@@ -43,18 +48,11 @@ const ipc = require('electron').ipcRenderer
 var code = $("#box").val()
 
 
-$( "#box" ).on('keyup',function() {
+$("#box").on('keyup',function() {
   if(code != $("#box").val()){
-    var filepath = `${__dirname}/template/sketch.js`
-    fs.writeFile(filepath, $("#box").val(), function (err) {
-      if(err){
-        alert("An error ocurred updating the file"+ err.message);
-        console.log(err);
-        return;
-      }
-    });
-    //alert( "Handler for .change() called." );
-    //console.log("code changed")
+    var new_code = $("#box").val()
+    ipc.send('async_save_scratch_or_global_file', new_code);
+    code = new_code
     var caretPos = $('#box').prop("selectionStart");
     console.log(caretPos)
     var start, end ;
@@ -70,6 +68,13 @@ var fs = require('fs');
 $("#play").on('click',function(){
   ipc.send('asynchronous_load_scratch', 'ping')
 });
-//var fs = require('fs'); // Load the File System to execute our common tasks (CRUD)
-//var dialog = app.dialog;
+
+ipc.on('getSaveAs', (event, fileData) => {
+  //var editor = ace.edit("editor");
+  //var fileData = editor.getValue();
+  ipc.send('fileSaveAs', $("#box").val());
+});
+
+
+
 </script>
