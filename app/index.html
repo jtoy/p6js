@@ -13,6 +13,7 @@ hello world<br>
 }
 #side{
   display:flex;
+  float:right;
   flex-direction:column;
 }
 body {background-color: powderblue;}
@@ -70,13 +71,8 @@ $("#box").on('keyup',function() {
     var new_code = editor.getValue()
     ipc.send('async_save_scratch_or_global_file', new_code);
     code = new_code
-    var caretPos = $('#box').prop("selectionStart");
-    console.log(caretPos)
-    var start, end ;
-    var myString = editor.getValue()
-    for (start = caretPos; start >= 0 && myString[start] != "\n"; --start);
-    for (end = caretPos; end < myString.length && myString[end] != "\n"; ++end);
-    var line = myString.substring(start + 1, end - 1);
+    var currline = editor.getSelectionRange().start.row;
+    var line = editor.session.getLine(currline);
     $("#line").text(line)
   }
 });
