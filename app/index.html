@@ -16,47 +16,64 @@ hello world<br>
   flex-direction:column;
 }
 body {background-color: powderblue;}
+html {
+  overflow-x: hidden;
+}
+
+#box {
+  position: fixed;
+  height: 100%;
+  width: 50%;
+  padding-top: 20px;
+}
+
+.preview-text img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
 </style>
   <div id="play">play</div>
   <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
   <script src="jquery-3.1.1.min.js"></script> 
   <script src="underscore-min.js"></script> 
-<div>
-  <div id="editor">
-    <pre>
-<code>
-<textarea id="box" rows=50 cols=100>
+  <script src="js/ace.js" type="text/javascript" charset="utf-8"></script>
+  <div>
+    <div id="editor">
+      <pre id="box" >
   function setup(){
   }
 
   function draw(){
   }
-</textarea>
-</code>
-    </pre>
-</div>
-<div id="side">
- side
- <div id="line">CURRENT LINE</div>
-</div>
+      </pre>
+   </div>
+   <div id="side">
+     side
+     <div id="line">CURRENT LINE</div>
+  </div>
 </div>
 
 
 <script>
 if (window.module) module = window.module;
 const ipc = require('electron').ipcRenderer
-var code = $("#box").val()
+
+var editor = ace.edit("box");
+editor.setTheme("ace/theme/github");
+editor.session.setMode("ace/mode/javascript");
+var code = editor.getValue()
 
 
 $("#box").on('keyup',function() {
-  if(code != $("#box").val()){
-    var new_code = $("#box").val()
+  if(code != editor.getValue()){
+    var new_code = editor.getValue()
     ipc.send('async_save_scratch_or_global_file', new_code);
     code = new_code
     var caretPos = $('#box').prop("selectionStart");
     console.log(caretPos)
     var start, end ;
-    var myString = $("#box").val()
+    var myString = editor.getValue()
     for (start = caretPos; start >= 0 && myString[start] != "\n"; --start);
     for (end = caretPos; end < myString.length && myString[end] != "\n"; ++end);
     var line = myString.substring(start + 1, end - 1);
@@ -72,7 +89,7 @@ $("#play").on('click',function(){
 ipc.on('getSaveAs', (event, fileData) => {
   //var editor = ace.edit("editor");
   //var fileData = editor.getValue();
-  ipc.send('fileSaveAs', $("#box").val());
+  ipc.send('fileSaveAs', editor.getValue());
 });
 
 
