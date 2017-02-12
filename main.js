@@ -29,7 +29,7 @@ function createWindow () {
   mainWindow.loadURL(`file://${__dirname}/app/index.html`)
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  //mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -83,7 +83,25 @@ let template = [{
   }, {
     label: 'Open',
     accelerator: 'CmdOrCtrl+O',
-    role: 'open'
+    click: function() {
+      // Open a new file and either put it in the same window
+      // or put it in a new window
+      selectFileDialog((files) => {
+        if (files != undefined) {
+          globalFilePath = files;
+          // Set the title of the window to the global filename
+          mainWindow.setTitle("p6js - " +globalFilePath );
+          // extract the filename
+          var array = globalFilePath.split("/");
+          filename = array[array.length - 1];
+          readFile(files, (content) => {
+            // Send to page
+            mainWindow.webContents.send('file-contents', content);
+          });
+        }
+      });
+    }
+  
   }, {
     label: 'Save',
     accelerator: 'CmdOrCtrl+S',
@@ -266,7 +284,27 @@ ipc.on('async_save_scratch_or_global_file', function(event, data) {
   save_scratch_or_global_file(data);
 });
 
+function selectFileDialog(callback) {
+  dialog.showOpenDialog({
+    properties: ['openFile'],
+  }, function(file) {
+    if (file != undefined) {
+      callback(file[0]);
+    } else {
+      callback(undefined);
+    }
+  });
+}
 
-
+function readFile(filePath, callback) {
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      error('danger', '<strong>Uh-Oh!</strong> There was an error reading the file. Error: ' + err);
+      callback();
+    } else {
+      callback(data);
+    }
+  });
+}
 
 

@@ -65,6 +65,9 @@ editor.setTheme("ace/theme/github");
 editor.session.setMode("ace/mode/javascript");
 var code = editor.getValue()
 
+ipc.on('file-contents', (event, contents) => {
+  editor.setValue(contents);
+});
 
 $("#box").on('keyup',function() {
   if(code != editor.getValue()){
