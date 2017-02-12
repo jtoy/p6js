@@ -83,8 +83,6 @@ $("#play").on('click',function(){
 });
 
 ipc.on('getSaveAs', (event, fileData) => {
-  //var editor = ace.edit("editor");
-  //var fileData = editor.getValue();
   ipc.send('fileSaveAs', editor.getValue());
 });
 

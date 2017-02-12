@@ -187,6 +187,9 @@ app.on('activate', function () {
 function load_scratch(){
   const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
   newWindow = new BrowserWindow({width: width, height: height})
+  if(globalFilePath){
+    fs.createReadStream(globalFilePath).pipe(fs.createWriteStream(`${__dirname}/app/template/sketch.js`));
+  }
   var path = `file://${__dirname}/app/template/index.html`
   console.log(path)
   newWindow.loadURL(path)
