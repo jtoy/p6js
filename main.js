@@ -53,8 +53,27 @@ app.on('ready', () => {
 })
 
 const Menu = electron.Menu
+const name = electron.app.getName();
 let template = [{
-  label: 'Edit',
+    label: name,
+    submenu: [{
+      label: `About ${name}`,
+      role: 'about'
+    }, {
+      label: 'Settings',
+      accelerator: 'Command+,',
+      click: function() {
+        showSettingsWindow();
+      }
+    }, {
+      label: 'Quit',
+      accelerator: 'Command+Q',
+      click: function() {
+        app.quit()
+      }
+    }]
+}, {
+  label: 'File',
   submenu: [{
     label: 'Run',
     accelerator: 'CmdOrCtrl+R',
