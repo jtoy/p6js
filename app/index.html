@@ -1,4 +1,3 @@
-hello world<br>
 <title>p6 - scratchpad</title>
 <style>
 #container{
@@ -82,7 +81,7 @@ ipc.on('file-contents', (event, contents) => {
   editor.setValue(contents);
 });
 
-$("#box").on('keyup',function() {
+$("#box").on('keyup click',function() {
   if(code != editor.getValue()){
     var new_code = editor.getValue()
     ipc.send('async_save_scratch_or_global_file', new_code);
