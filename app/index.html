@@ -34,10 +34,13 @@ html {
 }
 
 </style>
+<link rel="stylesheet" type="text/css" href="stylesheets/spectrum.css">
+
   <div id="play">play</div>
   <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
-  <script src="jquery-3.1.1.min.js"></script> 
-  <script src="underscore-min.js"></script> 
+  <script src="js/jquery-3.1.1.min.js"></script> 
+  <script src="js/underscore-min.js"></script> 
+  <script src='js/spectrum.js'></script>
   <script src="js/ace.js" type="text/javascript" charset="utf-8"></script>
   <div>
     <div id="editor">
@@ -52,6 +55,8 @@ html {
    <div id="side">
      side
      <div id="line">CURRENT LINE</div>
+     <input id='colorpicker' />
+     <div id="rgb"></div>
   </div>
 </div>
 
@@ -59,6 +64,14 @@ html {
 <script>
 if (window.module) module = window.module;
 const ipc = require('electron').ipcRenderer
+
+$("#colorpicker").spectrum({
+  color: "#f00",
+  showButtons: false,
+  change: function(color) {
+    $("#rgb").text(color.toRgbString());
+  }
+});
 
 var editor = ace.edit("box");
 editor.setTheme("ace/theme/github");
