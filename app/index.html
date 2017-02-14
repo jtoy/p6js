@@ -54,23 +54,13 @@ html {
    <div id="side">
      side
      <div id="line">CURRENT LINE</div>
-     <input id='colorpicker' />
-     <div id="rgb"></div>
+     <div id="fillcolorpicker"></div>
   </div>
 </div>
-
 
 <script>
 if (window.module) module = window.module;
 const ipc = require('electron').ipcRenderer
-
-$("#colorpicker").spectrum({
-  color: "#f00",
-  showButtons: false,
-  change: function(color) {
-    $("#rgb").text(color.toRgbString());
-  }
-});
 
 var editor = ace.edit("box");
 editor.setTheme("ace/theme/github");
@@ -81,14 +71,36 @@ ipc.on('file-contents', (event, contents) => {
   editor.setValue(contents);
 });
 
-$("#box").on('keyup click',function() {
+$("#box").on('keyup',function() {
   if(code != editor.getValue()){
     var new_code = editor.getValue()
     ipc.send('async_save_scratch_or_global_file', new_code);
     code = new_code
-    var currline = editor.getSelectionRange().start.row;
-    var line = editor.session.getLine(currline);
-    $("#line").text(line)
+  }
+  var currline = editor.getSelectionRange().start.row;
+  var line = editor.session.getLine(currline);
+  $("#line").text(line)
+});
+$("#box").on('click',function() {
+  var currline = editor.getSelectionRange().start.row;
+  var line = editor.session.getLine(currline);
+  $("#line").text(line)
+  $(".sp-container").hide() //this seems like a bug, should hide #fillcolorpicker instead but doesnt seem to work
+  if(/fill\(\S*\)/.test(line) ){
+    //TODO find out which color mode we are in, assume RGB for now
+    var Range= ace.require('ace/range').Range
+    var row = editor.selection.lead.row
+    $("#fillcolorpicker").spectrum({
+      color: "#f00",
+      showButtons: false,
+      flat:true,
+      move: function(color) {
+        var rgb = color.toRgb()
+        var new_line = line.replace(/fill\(\S*\)/,"fill("+rgb.r+","+rgb.g+","+rgb.b+")" )
+        editor.session.replace(new Range(row, 0, row, Number.MAX_VALUE),new_line)
+      }
+    });
+    $('.sp-container').css({'top':event.pageY+20,'left':event.pageX+20, 'position':'absolute', 'border':'1px solid black', 'padding':'5px'});
   }
 });
 
@@ -100,7 +112,6 @@ $("#play").on('click',function(){
 ipc.on('getSaveAs', (event, fileData) => {
   ipc.send('fileSaveAs', editor.getValue());
 });
-
 
 
 </script>

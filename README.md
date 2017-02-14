@@ -1,10 +1,14 @@
 # p6js
-My experiments with working on a next generation creative coding environment
+My experiments with working on a next generation visual coding environment
 
-# experiments
+
+# features
+* tweak colors, just click wherever you see fill and a color picker will pop up
+* underscore javascript library included and can be used instantly
+
+# features / experiments to be worked on
 * realtime documentation browser
 * live coding
-* tweak colors mode
 * tweak shapes mode
 
 # TODOS
@@ -18,4 +22,7 @@ My experiments with working on a next generation creative coding environment
 how should the coordinate system act?
 what does fullscreen really mean?
 
-copywrite Jason Toy
+#built on 
+uses many open source libraries like electron and ace editor
+
+copyright Jason Toy
