@@ -16,7 +16,11 @@ My experiments with working on a next generation visual coding environment
 * clojurescript integration
 * multiple window support
 * dont allow multiple run windows?
-* console for sketch
+* background color tweak mode
+* search
+* add author
+* tag version to save as art experiment
+
 
 
 how should the coordinate system act?
@@ -24,5 +28,10 @@ what does fullscreen really mean?
 
 #built on 
 uses many open source libraries like electron and ace editor
+
+# Running 
+To run from source, run:
+npm install
+electron .
 
 copyright Jason Toy

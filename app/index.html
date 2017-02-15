@@ -32,6 +32,12 @@ html {
   max-height: 100%;
 }
 
+#console {
+  height: 180px;
+  overflow: auto;
+  background-color: blue;
+}
+
 </style>
 <link rel="stylesheet" type="text/css" href="stylesheets/spectrum.css">
 
@@ -53,6 +59,7 @@ html {
    </div>
    <div id="side">
      side
+     <div id="consolebox"><div>console</div><div id="console"></div>
      <div id="line">CURRENT LINE</div>
      <div id="fillcolorpicker"></div>
   </div>
@@ -69,6 +76,9 @@ var code = editor.getValue()
 
 ipc.on('file-contents', (event, contents) => {
   editor.setValue(contents);
+});
+ipc.on('runner_console', (event, contents) => {
+  $("#console").append(contents['0']+"<br>")
 });
 
 $("#box").on('keyup',function() {

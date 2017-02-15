@@ -11,7 +11,6 @@ const dialog = electron.dialog;
 const fs = require('fs'); 
 
 var globalFilePath
-var testing = "wtf"
 
 ipc.on('asynchronous_load_scratch', function (event, arg) {
   load_scratch()
@@ -20,6 +19,10 @@ ipc.on('asynchronous_load_scratch', function (event, arg) {
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
+let runnerWindow
+
+console.log(require('module').globalPaths);
+console.log(require('electron'));
 
 function createWindow () {
   // Create the browser window.
@@ -204,13 +207,14 @@ app.on('activate', function () {
 
 function load_scratch(){
   const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
-  newWindow = new BrowserWindow({width: width, height: height})
+  runnerWindow = new BrowserWindow({width: width, height: height})
   if(globalFilePath){
     fs.createReadStream(globalFilePath).pipe(fs.createWriteStream(`${__dirname}/app/template/sketch.js`));
   }
   var path = `file://${__dirname}/app/template/index.html`
   console.log(path)
-  newWindow.loadURL(path)
+  runnerWindow.loadURL(path)
+  runnerWindow.webContents.openDevTools()
 }
 
 
@@ -240,6 +244,9 @@ function saveFileDialog(callback) {
 
 ipc.on('fileSave', function(event, data) {
   writeFile(globalFilePath, data);
+});
+ipc.on('runner_console_collect', function(event, data) {
+  mainWindow.webContents.send('runner_console', data);
 });
 
 function error(type, message) {
