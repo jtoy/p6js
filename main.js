@@ -207,7 +207,9 @@ app.on('activate', function () {
 
 function load_scratch(){
   const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
-  runnerWindow = new BrowserWindow({width: width, height: height})
+  if(runnerWindow == undefined){
+    runnerWindow = new BrowserWindow({width: width, height: height})
+  }
   if(globalFilePath){
     fs.createReadStream(globalFilePath).pipe(fs.createWriteStream(`${__dirname}/app/template/sketch.js`));
   }
