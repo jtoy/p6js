@@ -19,7 +19,7 @@ ipc.on('asynchronous_load_scratch', function (event, arg) {
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
-let runnerWindow
+//let runnerWindow
 
 console.log(require('module').globalPaths);
 console.log(require('electron'));
@@ -207,15 +207,19 @@ app.on('activate', function () {
 
 function load_scratch(){
   const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
-  if(runnerWindow == undefined){
+  if(typeof runnerWindow === 'undefined' || runnerWindow == null){
     runnerWindow = new BrowserWindow({width: width, height: height})
   }
+  console.log(runnerWindow)
   if(globalFilePath){
     fs.createReadStream(globalFilePath).pipe(fs.createWriteStream(`${__dirname}/app/template/sketch.js`));
   }
   var path = `file://${__dirname}/app/template/index.html`
   console.log(path)
   runnerWindow.loadURL(path)
+  runnerWindow.on('close', function (event) {
+    runnerWindow = null
+  })
   runnerWindow.webContents.openDevTools()
 }
 

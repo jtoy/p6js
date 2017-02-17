@@ -13,6 +13,8 @@ My experiments with working on a next generation visual coding environment
 
 # TODOS
 * save (for when autosave is not being used)
+* open recent
+* refactor to seperate html/js/css, very ugly code
 * clojurescript integration
 * multiple window support
 * dont allow multiple run windows?
